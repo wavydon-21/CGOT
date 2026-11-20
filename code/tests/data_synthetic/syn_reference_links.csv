@@ -1,0 +1,4 @@
+from_step,to_step,scorable
+S0,A,no
+A,B,yes
+B,C,yes

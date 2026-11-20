@@ -1,0 +1,52 @@
+tag_2015,col_2019,kind,status,reason
+FIT101,FIT101.Pv,sensor,kept,
+LIT101,LIT101.Pv,sensor,kept,
+MV101,MV101.Status,actuator,kept,
+P101,P101.Status,actuator,kept,
+P102,P102.Status,actuator,kept,
+AIT201,AIT201.Pv,sensor,dropped,pre-attack values outside 2015 range
+AIT202,AIT202.Pv,sensor,dropped,pre-attack values outside 2015 range
+AIT203,AIT203.Pv,sensor,dropped,pre-attack values outside 2015 range
+FIT201,FIT201.Pv,sensor,kept,
+MV201,MV201.Status,actuator,kept,
+P201,P201.Status,actuator,dropped,state codes differ
+P202,P202.Status,actuator,kept,
+P203,P203.Status,actuator,kept,
+P204,P204.Status,actuator,kept,
+P205,P205.Status,actuator,kept,
+P206,P206.Status,actuator,kept,
+DPIT301,DPIT301.Pv,sensor,kept,
+FIT301,FIT301.Pv,sensor,kept,
+LIT301,LIT301.Pv,sensor,kept,
+MV301,MV301.Status,actuator,kept,
+MV302,MV302.Status,actuator,kept,
+MV303,MV303.Status,actuator,kept,
+MV304,MV304.Status,actuator,kept,
+P301,P301.Status,actuator,kept,
+P302,P302.Status,actuator,kept,
+AIT401,AIT401.Pv,sensor,kept,
+AIT402,AIT402.Pv,sensor,kept,
+FIT401,FIT401.Pv,sensor,kept,
+LIT401,LIT401.Pv,sensor,kept,
+P401,P401.Status,actuator,dropped,state codes differ
+P402,P402.Status,actuator,kept,
+P403,P403.Status,actuator,dropped,state codes differ
+P404,P404.Status,actuator,kept,
+UV401,UV401.Status,actuator,kept,
+AIT501,AIT501.Pv,sensor,dropped,pre-attack values outside 2015 range
+AIT502,AIT502.Pv,sensor,kept,
+AIT503,AIT503.Pv,sensor,dropped,pre-attack values outside 2015 range
+AIT504,AIT504.Pv,sensor,kept,
+FIT501,FIT501.Pv,sensor,kept,
+FIT502,FIT502.Pv,sensor,kept,
+FIT503,FIT503.Pv,sensor,kept,
+FIT504,FIT504.Pv,sensor,kept,
+P501,P501.Status,actuator,kept,
+P502,P502.Status,actuator,kept,
+PIT501,PIT501.Pv,sensor,kept,
+PIT502,PIT502.Pv,sensor,kept,
+PIT503,PIT503.Pv,sensor,kept,
+FIT601,FIT601.Pv,sensor,kept,
+P601,P601.Status,actuator,dropped,state codes differ
+P602,P602.Status,actuator,kept,
+P603,P603.Status,actuator,kept,

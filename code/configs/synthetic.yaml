@@ -1,0 +1,58 @@
+# CausalGuard-OT minimal prototype: MADE-UP campaign (Expected Outcomes Part B, Section B2). Not SWaT data.
+# Run (from the code folder):
+#   python -m causalguard make-synthetic
+#   python -m causalguard all --config configs/synthetic.yaml
+# Settings follow Chapter 3, Table 3.5. Paths are relative to the code folder.
+stage: synthetic            # made-up files only (tests/data_synthetic)
+run_name: synthetic_campaign
+
+dataset:
+  historian: tests/data_synthetic/syn_historian.xlsx
+  flows: tests/data_synthetic/syn_flows.csv                  # one row per flow, as exported by preprocessing
+  capture_coverage: tests/data_synthetic/syn_capture_coverage.csv
+  host_roles: tests/data_synthetic/syn_host_roles.csv
+  layout_table: tests/data_synthetic/syn_plant_layout.csv    # domain rules D-1..D-5 (design P5)
+  statistical_table: tests/data_synthetic/syn_statistical_table.csv   # stands in for the PCMCI+ output
+  # Ground truth. Read only by explanation export AFTER the paths are fixed, and by the scorer (decision D9, R5).
+  documented_steps: tests/data_synthetic/syn_documented_steps.csv
+  reference_links: tests/data_synthetic/syn_reference_links.csv
+  runs_dir: runs
+
+analysis_window: {start: "2000-01-01 09:00:00", end: "2000-01-01 09:45:00"}
+pre_attack_window: {start: "2000-01-01 09:00:00", end: "2000-01-01 09:05:00"}   # reference flows; never events
+
+ingestion:
+  min_capture_gap_s: 1      # a break this long between two capture files is listed as a data gap
+
+network:
+  scada_workstation: 192.168.1.201
+
+thresholds:
+  source: fixed             # Part B, B2.5: fixed values stand in for learned ones in the minimal prototype
+  bands:                    # a row is flagged if the value OR its 1-s change is outside the band
+    FIT101: {value: [2.0, 3.0], change: [-0.2, 0.2]}
+    LIT101: {value: [500.0, 800.0], change: [-1.0, 1.0]}
+  actuators: [MV101]
+  frozen_value_check: false # off for this campaign (FYP2)
+  merge_gap_s: 5            # Table 3.5: event merge gap
+  volume_factor: 10         # new setting (to be added to Table 3.5)
+
+linking:
+  window_s: 900             # Table 3.5: linking window (15 minutes)
+  stat_lag_block_s: 5       # the table's lag range is widened by one 5-s block on each side (Part B, B9 item 5)
+  weights: {statistical: 1, domain: 1, provenance: 1}   # Table 3.5: link weights
+
+linkers:                    # baselines and ablations are switches of the same module (Table 4.5)
+  - {name: causalguard, mode: causalguard, rules: [statistical, domain, provenance], long_provenance: true}
+  - {name: temporal, mode: temporal}
+
+paths: {k: 3}               # Table 3.5: paths exported
+
+scoring:
+  tolerance_s: 60           # Table 3.5: event-to-step tolerance
+  success_rule: {framework: causalguard, baseline: temporal}
+
+# Freeze gate: the run stops if the frozen answer key is missing or has changed.
+expected_outcomes:
+  path: ../research/chapter-4/Expected_Outcomes_Part_B.md
+  sha256: 5F438DD4547113E631523CA9D26628E92E44E556981A5978C4C92E15286B7193

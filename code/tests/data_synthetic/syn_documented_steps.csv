@@ -1,0 +1,5 @@
+step_id,logged_start,logged_end,scored,conn_host_a,conn_host_b,conn_port,description
+S0,2000-01-01 09:05:00.000,2000-01-01 09:05:00.000,no,,,,Malware put on the SCADA workstation (WS) by USB
+A,2000-01-01 09:10:00.000,2000-01-01 09:15:00.000,yes,,,,Historian data copied to WS and sent to the exfiltration server
+B,2000-01-01 09:40:10.000,2000-01-01 09:40:12.000,yes,192.168.1.201,192.168.1.181,6001,Second malware downloaded from the malware server
+C,2000-01-01 09:40:00.000,2000-01-01 09:43:00.000,yes,,,,WS sends a CIP write to PLC-1 that closes valve MV-101

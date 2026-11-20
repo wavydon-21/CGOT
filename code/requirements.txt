@@ -1,0 +1,12 @@
+# Versions fixed in Chapter 3, Section 3.9 (Python 3.11.9 on Windows 11)
+pandas==3.0.5
+numpy==2.4.6
+scikit-learn==1.9.1
+# Needed for the workbooks and the Parquet files; the versions that were used are written to
+# runs/<id>/environment.json and should be added to Section 3.9 after the pilot is run.
+pyarrow>=20
+openpyxl>=3.1
+PyYAML>=6
+psutil>=5.9
+# Needed to run the tests (tests/test_pilot.py, tests/test_causalguard.py)
+pytest>=8

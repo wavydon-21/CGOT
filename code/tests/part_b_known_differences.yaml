@@ -1,0 +1,22 @@
+# Differences between the prototype and the frozen Part B that are written down and explained.
+# Full explanation: research/chapter-4/Prototype_Results_vs_Part_B.md, Section 3.
+# The code was NOT changed to remove these. They change no event, link, path, score or measure.
+differences:
+  - item: "ev02 other types matched (detail)"
+    part_b: "B3 detail: 'also a new connection and unusual volume'"
+    run: "also new_connection; volume not checked"
+    reason: >
+      The volume rule (B2.5) compares a flow with the highest rate of the SAME host pair and port in the
+      pre-attack capture. WS -> EXF:443 has no pre-attack flow, so there is nothing to compare with.
+      The code does not check volume in that case. The key's detail text assumed it would count.
+  - item: "ev06 other types matched (detail)"
+    part_b: "B3 detail: 'download; also new connection and unusual volume'"
+    run: "also new_connection; volume not checked"
+    reason: "Same as ev02: WS -> MAL:6001 has no pre-attack flow to compare with."
+  - item: "ev06->ev07 rule (reason)"
+    part_b: "B5.3 reason: 'download then new traffic from 192.168.1.201'"
+    run: "same host 192.168.1.201 (f11, f12)"
+    reason: >
+      Algorithm 4.2 line 12 accepts a provenance link on a shared host only. Table 3.4 names the
+      'download followed by new traffic' case, but no written rule says how a flow is recognised as a
+      download, so the code gives the plain same-host reason. Decision, status and score are as in Part B.

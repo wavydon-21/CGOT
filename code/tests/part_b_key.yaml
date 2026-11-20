@@ -1,0 +1,125 @@
+# Machine-readable copy of the answer key in Expected_Outcomes_Part_B.md (frozen 15 Nov 2026, 21:56,
+# SHA-256 5F438DD4547113E631523CA9D26628E92E44E556981A5978C4C92E15286B7193).
+# Transcribed from Part B Sections B3-B8 on 16 Nov 2026, BEFORE the prototype was run for the first time.
+# This file adds nothing to Part B. If the two ever disagree, Part B is right and this file is the error.
+# Times are on 2000-01-01. Rule names: P-host = same host; P-host-long = next later event on the same host,
+# beyond 15 min; P-download = "download then new traffic" (the wording Part B uses for ev06->ev07).
+
+counts: {historian_rows: 2700, flows: 12, events: 10, network_events: 6, process_events: 4}
+
+events:   # B3
+  - {id: ev01, start: "09:10:05", end: "09:14:30", kind: network, source: f06, type: unusual_volume, file: syn_00001, ref: f06}
+  - {id: ev02, start: "09:10:20", end: "09:14:55", kind: network, source: f07, type: undocumented_host, file: syn_00001, ref: f07, also: [new_connection, unusual_volume]}
+  - {id: ev03, start: "09:22:00", end: "09:22:01", kind: network, source: f08, type: new_connection, file: syn_00001, ref: f08}
+  - {id: ev04, start: "09:30:00", end: "09:30:07", kind: process, source: FIT101, type: abrupt_change, ref: "rows 1802-1809"}
+  - {id: ev05, start: "09:39:50.0", end: "09:39:50.2", kind: network, source: f10, type: undocumented_host, file: syn_00001, ref: f10}
+  - {id: ev06, start: "09:40:10.0", end: "09:40:12.0", kind: network, source: f11, type: undocumented_host, file: syn_00001, ref: f11, also: [new_connection, unusual_volume]}
+  - {id: ev07, start: "09:41:05", end: "09:41:06", kind: network, source: f12, type: cip_write, file: syn_00001, ref: f12}
+  - {id: ev08, start: "09:41:07", end: "09:41:07", kind: process, source: MV101, type: actuator_state_change, ref: "row 2469", value: "2 -> 1"}
+  - {id: ev09, start: "09:41:09", end: "09:44:59", kind: process, source: FIT101, type: abrupt_change, ref: "rows 2471-2701"}
+  - {id: ev10, start: "09:41:30", end: "09:44:59", kind: process, source: LIT101, type: abrupt_change, ref: "rows 2492-2701"}
+
+event_numbers:   # B3 detail column and "must not become events" list
+  ev01_rate_bps: 196226
+  ev01_limit_bps: 80000
+  f05_rate_bps: 452
+  f05_limit_bps: 4286
+  ev04_flagged_seconds: [1800, 1801, 1802, 1806, 1807]
+
+non_events:      # B3, five checks
+  flows: [f01, f02, f03, f04, f05, f09]
+  FIT101_not_flagged_seconds: [2467, 2468]
+  LIT101_not_flagged_seconds: [2469, 2489]      # the whole range, both ends included
+
+assignment:      # B4
+  {ev01: A, ev02: A, ev03: null, ev04: null, ev05: C, ev06: B, ev07: C, ev08: C, ev09: C, ev10: C}
+
+temporal_links:  # B5.1: 25 links, [from, to, dt in seconds]
+  count: 25
+  links:
+    - [ev01, ev02, 15]
+    - [ev01, ev03, 715]
+    - [ev02, ev03, 700]
+    - [ev03, ev04, 480]
+    - [ev04, ev05, 590]
+    - [ev04, ev06, 610]
+    - [ev04, ev07, 665]
+    - [ev04, ev08, 667]
+    - [ev04, ev09, 669]
+    - [ev04, ev10, 690]
+    - [ev05, ev06, null]
+    - [ev05, ev07, null]
+    - [ev05, ev08, null]
+    - [ev05, ev09, null]
+    - [ev05, ev10, null]
+    - [ev06, ev07, null]
+    - [ev06, ev08, null]
+    - [ev06, ev09, null]
+    - [ev06, ev10, null]
+    - [ev07, ev08, null]
+    - [ev07, ev09, null]
+    - [ev07, ev10, null]
+    - [ev08, ev09, null]
+    - [ev08, ev10, null]
+    - [ev09, ev10, null]
+  no_link: [[ev01, ev04, 1195], [ev02, ev04, 1180], [ev03, ev05, 1070]]
+
+causalguard:
+  candidates: 26                                  # B5.2
+  long_candidates: [[ev02, ev05, 1770]]           # the only one (TC8)
+  accepted:                                       # B5.3: 12
+    - {from: ev01, to: ev02, types: [provenance], rule: [P-host], flows: [f06, f07], status: observed, score: 1, correct: true}
+    - {from: ev02, to: ev05, types: [provenance], rule: [P-host-long], flows: [f07, f10], status: observed, score: 1, correct: false}
+    - {from: ev04, to: ev10, types: [domain], rule: [D-5], status: inferred, score: 1, correct: false}
+    - {from: ev05, to: ev06, types: [provenance], rule: [P-host], flows: [f10, f11], status: observed, score: 1, correct: false}
+    - {from: ev05, to: ev07, types: [provenance], rule: [P-host], flows: [f10, f12], status: observed, score: 1, correct: true}
+    - {from: ev06, to: ev07, types: [provenance], rule: [P-download], flows: [f11, f12], status: observed, score: 1, correct: true}
+    - {from: ev07, to: ev08, types: [domain], rule: [D-1], status: inferred, score: 1, correct: true}
+    - {from: ev07, to: ev09, types: [domain], rule: [D-1], status: inferred, score: 1, correct: true}
+    - {from: ev07, to: ev10, types: [domain], rule: [D-1], status: inferred, score: 1, correct: true}
+    - {from: ev08, to: ev09, types: [domain], rule: [D-3], status: inferred, score: 1, correct: true}
+    - {from: ev08, to: ev10, types: [domain], rule: [D-4], status: inferred, score: 1, correct: true}
+    - {from: ev09, to: ev10, types: [domain, statistical], rule: [D-5, S-1], status: inferred, score: 2, correct: true, stat_lag_s: 21}
+  rejected:                                       # B5.4: 14, with the meaning of the reason
+    - {pairs: [[ev01, ev03], [ev02, ev03]], reason: "no shared host; no other rule", must_say: "no shared host"}
+    - {pairs: [[ev03, ev04]], reason: "network->process needs a CIP write to the PLC of that stage; f08 is a read to PLC-2", must_say: "not a CIP write"}
+    - {pairs: [[ev04, ev05], [ev04, ev06], [ev04, ev07]], reason: "process->network: no rule type applies", must_say: "process -> network"}
+    - {pairs: [[ev04, ev08]], reason: "no layout row FIT101 -> MV101", must_say: "no layout row FIT101 -> MV101"}
+    - {pairs: [[ev04, ev09]], reason: "same tag; no rule", must_say: "same tag"}
+    - {pairs: [[ev05, ev08], [ev05, ev09], [ev05, ev10]], reason: "network->process, but f10 is not a CIP write", must_say: "f10 is not a CIP write"}
+    - {pairs: [[ev06, ev08], [ev06, ev09], [ev06, ev10]], reason: "network->process, but f11 is not a CIP write", must_say: "f11 is not a CIP write"}
+
+paths:   # B6
+  causalguard:
+    - {rank: 1, events: [ev01, ev02, ev05, ev06, ev07, ev08, ev09, ev10], score: 8}
+    - {rank: 2, events: [ev01, ev02, ev05, ev06, ev07, ev09, ev10], score: 7}
+    - {rank: 3, events: [ev01, ev02, ev05, ev07, ev08, ev09, ev10], score: 7}
+  causalguard_rank4_not_exported: {events: [ev02, ev05, ev06, ev07, ev08, ev09, ev10], score: 7}
+  temporal:
+    - {rank: 1, events: [ev01, ev02, ev03, ev04, ev05, ev06, ev07, ev08, ev09, ev10], score: 9}
+    - {rank: 2, events: [ev01, ev02, ev03, ev04, ev05, ev06, ev07, ev08, ev09], score: 8}
+    - {rank: 3, events: [ev01, ev02, ev03, ev04, ev05, ev06, ev07, ev08, ev10], score: 8}
+  temporal_paths_with_score_8: 8
+
+measures:   # B7
+  causalguard: {candidate_links: 26, accepted_links: 12, correct_links: 9, link_precision: 0.750, link_recall: 0.50,
+                recovered: ["B->C"], step_coverage: 1.00, step_order: [A, C, B], pairs_right: 2, pairs_total: 3,
+                kendall_tau: 0.333, observed_links_top_path: "4/7"}
+  temporal:    {candidate_links: 25, accepted_links: 25, correct_links: 15, link_precision: 0.600, link_recall: 0.50,
+                recovered: ["B->C"], step_coverage: 1.00, step_order: [A, C, B], pairs_right: 2, pairs_total: 3,
+                kendall_tau: 0.333, observed_links_top_path: "0/9"}
+  success_rule: {precision_higher: true, coverage_equal_or_higher: true, tau_not_lower: true, holds: true}
+
+explanation:   # B8
+  data_gap: ["09:05:00", "09:07:00"]
+  unknown_steps:
+    causalguard: {1: [S0], 2: [S0], 3: [S0, B]}
+    temporal: {1: [S0], 2: [S0], 3: [S0]}
+  checklist_causalguard_all_pass: true
+  reasons_hold: "12/12"
+  files: {events_rows: 10, links_causalguard_accepted: 12, links_causalguard_rejected: 14, links_temporal: 25, paths_per_linker: 3,
+          present: [events.csv, links.csv, paths.json, report.html, timings.csv, manifest.json]}
+
+merge_gap_2s:   # B8.1: only the event list is predicted
+  ev04_becomes: [["09:30:00", "09:30:02"], ["09:30:06", "09:30:07"]]
+  events: 11

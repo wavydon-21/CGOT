@@ -1,0 +1,71 @@
+# DEV settings: identical to pilot_2015.yaml except for the stage.
+# Development run: python -m pilot run --config configs/dev_2015.yaml
+# Never loads the attack file or the normal hold-out.
+# Settings follow Chapter 3, Table 3.5 and Section 3.6. Paths are relative to the code folder.
+stage: dev              # reads ONLY the training and calibration parts of the normal file
+expected_n_tags: 51
+
+data:
+  normal_xlsx: ../research/datasets/swat-review-2026-11-05/sources/SWaT_Dataset_Normal_v1.xlsx
+  attack_xlsx: ../research/datasets/swat-review-2026-11-05/sources/SWaT_Dataset_Attack_v0.xlsx
+  attack_list_xlsx: ../research/datasets/swat-review-2026-11-05/sources/List_of_attacks_Final.xlsx
+  tag_mapping_csv: ../research/chapter-3/analysis/tag_mapping_2015_2019.csv   # the 42 kept tags
+  cache_dir: cache        # Parquet files and manifest.json (SHA-256 of every source)
+  runs_dir: runs
+
+split:                    # time order, no shuffling
+  train: 0.70
+  calibration: 0.15
+  holdout: 0.15
+
+detection_budget: 0.01    # share of calibration rows flagged (isolation forest threshold)
+
+events:
+  merge_gap_s: 5          # alarm rows this close together count as one false-alarm episode (design P1)
+
+rule_baseline:
+  flow_above: 0.1         # 'flow above zero' means above this value (as in the Chapter 3 invariant check)
+  delay_grid_max_s: 120   # the delay of each rule is the smallest lag, up to this, ...
+  max_violation_share: 0.0     # ... after which no training row breaks the rule (Chapter 3: the rule holds in 100% of rows)
+  # Decision D7 (student, 14 Nov 2026): each tag's training [min, max] is widened by 5% of its span, the same
+  # 5% used in the tag-mapping check (Chapter 3, Section 3.5.2). Reason: AIT402 and AIT502 drift below their
+  # training minimum later in the normal week; with no margin, 30.9% of calibration rows were flagged.
+  range_margin_fraction: 0.05  # widen each [min, max] by this share of its span
+  range_exclude_tags: []       # tags left out of the min/max check (they still feed the isolation forest)
+  # Decision D8 (student, 14 Nov 2026): also save a DIAGNOSTIC alarm with the range check on these drifting tags
+  # ignored (column rule_alarm_excl_drift; detector rule_baseline_excl_drift in the CSVs). The primary rule
+  # baseline result is unchanged. Used to check the per-attack predictions marked with a dagger in Part A.
+  diagnostic_exclude_tags: [AIT402, AIT502]
+  rules:
+    - id: R1
+      name: MV-101 open -> FIT-101 flow above zero
+      when_any: [{tag: MV101, equals: 2}]
+      flow_tag: FIT101
+    - id: R2
+      name: P-101 or P-102 running -> FIT-201 flow above zero
+      when_any: [{tag: P101, equals: 2}, {tag: P102, equals: 2}]
+      flow_tag: FIT201
+    - id: R3
+      name: P-301 or P-302 running -> FIT-301 flow above zero
+      when_any: [{tag: P301, equals: 2}, {tag: P302, equals: 2}]
+      flow_tag: FIT301
+
+isolation_forest:
+  n_estimators: 100
+  max_samples: auto       # scikit-learn default: min(256, rows)
+  seeds: [0, 1, 2, 3, 4]
+
+# Freeze gate. The pilot stage refuses to run until Expected_Outcomes.md exists AND its
+# SHA-256 (Get-FileHash, the value you write in the logbook) is pasted here.
+expected_outcomes:
+  path: ../research/chapter-4/Expected_Outcomes.md
+  sha256: null
+
+# Values the audit (TC1-TC5) compares against; from Chapter 3, Section 3.4.1.
+expected_audit:
+  attack_file: {rows: 449919, normal_label: 395298, attack_label: 54584, a_ttack_label: 37}
+  attack_gaps: 1
+  normal_gaps: null       # not reported in Chapter 3; the audit lists any gap it finds
+  example_rows:           # the two rows quoted in Section 3.4.1 (Excel row numbers)
+    - {src_row: 1756, timestamp: "2015-12-28 10:29:13", label: Normal}
+    - {src_row: 1757, timestamp: "2015-12-28 10:29:14", label: Attack}

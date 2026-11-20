@@ -1,0 +1,6 @@
+row_id,from_kind,from,from_address,relation,to_kind,to,stage_tags
+D-1,plc,PLC-1,192.168.1.10,controls stage,stage,1,MV101;FIT101;LIT101
+D-2,plc,PLC-2,192.168.1.20,controls stage,stage,2,FIT201
+D-3,tag,MV101,,sets flow at,tag,FIT101,
+D-4,tag,MV101,,feeds,tag,LIT101,
+D-5,tag,FIT101,,feeds,tag,LIT101,

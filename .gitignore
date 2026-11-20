@@ -1,0 +1,17 @@
+# Python
+__pycache__/
+*.pyc
+.pytest_cache/
+
+# Run outputs and converted data (regenerate locally)
+code/runs/
+code/cache/
+code/tests/data/
+code/tests/cache/
+code/tests/runs/
+
+# Never commit dataset files (SWaT belongs to iTrust)
+*.parquet
+*.pcap
+*.pcapng
+SWaT*

@@ -1,0 +1,2 @@
+row_id,from_tag,to_tag,lag_min_s,lag_max_s,sign
+S-1,FIT101,LIT101,5,30,positive
